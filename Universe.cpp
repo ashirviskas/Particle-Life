@@ -89,6 +89,7 @@ void Universe::Step() {
     Particle& p = m_particles[i];
 
     //Interactions
+    #pragma omp parallel for
     for (size_t j = 0; j < m_particles.size(); ++j) {
       //Other particle
       const Particle& q = m_particles[j];
@@ -144,6 +145,7 @@ void Universe::Step() {
   }
 
   //Update position
+  #pragma omp parallel for
   for (size_t i = 0; i < m_particles.size(); ++i) {
     //Current particle
     Particle& p = m_particles[i];
