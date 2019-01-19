@@ -2,9 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-static const int window_w = 950;
-static const int window_h = 900;
-static const int steps_per_frame_normal = 10;
+static const int window_w = 1920;
+static const int window_h = 1080;
+static const int steps_per_frame_normal = 5;
 
 int main(int argc, char *argv[]) {
   std::cout << "=========================================================" << std::endl;
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
   settings.depthBits = 24;
   settings.stencilBits = 8;
   settings.antialiasingLevel = 4;
-  settings.majorVersion = 3;
+  settings.majorVersion = 4;
   settings.minorVersion = 0;
 
   //Create the window
@@ -166,6 +166,8 @@ int main(int argc, char *argv[]) {
 
     //Flip the screen buffer
     window.display();
+    const sf::View mGUIView = sf::View(sf::FloatRect(0.f, 0.f, window_w, window_h));
+    window.setView(mGUIView);
   }
 
   return 0;

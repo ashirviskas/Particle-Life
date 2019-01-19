@@ -7,6 +7,7 @@
 static const float RADIUS = 5.0f;
 static const float DIAMETER = 2.0f * RADIUS;
 static const float R_SMOOTH = 2.0f;
+static const float NEAREST_CALC = 5000.0f;
 
 Universe::Universe(size_t num_types, size_t num_particles, int width, int height) {
   //Initialize everything
@@ -84,6 +85,7 @@ void Universe::SetRandomParticles() {
 }
 
 void Universe::Step() {
+  #pragma omp parallel for
   for (size_t i = 0; i < m_particles.size(); ++i) {
     //Current particle
     Particle& p = m_particles[i];
@@ -115,7 +117,7 @@ void Universe::Step() {
       const float minR = m_types.MinR(p.type, q.type);
       const float maxR = m_types.MaxR(p.type, q.type);
 
-      if (r2 > maxR*maxR || r2 < 0.01f) {
+      if (r2 > maxR*maxR || r2 < 0.01f || r2 > NEAREST_CALC) {
         continue;
       }
 
@@ -191,6 +193,7 @@ void Universe::Draw(sf::RenderWindow& window, float opacity) const {
   sf::CircleShape circle;
   circle.setRadius(RADIUS * m_zoom);
   circle.setOrigin(circle.getRadius(), circle.getRadius());
+  //#pragma omp parallel for
   for (size_t i = 0; i < m_particles.size(); ++i) {
     const Particle& p = m_particles[i];
     const float x = (p.x - m_center_x)*m_zoom + float(m_width/2);
@@ -207,6 +210,7 @@ void Universe::Draw(sf::RenderWindow& window, float opacity) const {
 int Universe::GetIndex(int x, int y) const {
   float cx, cy;
   ToCenter(x, y, cx, cy);
+  //#pragma omp parallel for
   for (size_t i = 0; i < m_particles.size(); ++i) {
     const float dx = m_particles[i].x - cx;
     const float dy = m_particles[i].y - cy;
